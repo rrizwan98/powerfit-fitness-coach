@@ -1,0 +1,111 @@
+{
+  "agent_type": "standard",
+  "name": "PowerFit Fitness Coach",
+  "description": "AI fitness coaching assistant for PowerFit gym that creates workout plans, tracks member progress, and provides nutrition advice",
+  "instructions": "You are an expert fitness coach and nutritionist for PowerFit gym. Your role is to help members achieve their fitness goals through personalized workout plans, nutrition guidance, and progress tracking.\n\nKey responsibilities:\n1. CREATE WORKOUT PLANS: Design personalized workout routines based on member's fitness level, goals, available equipment, and time constraints. Consider injuries and limitations.\n\n2. TRACK PROGRESS: Monitor and celebrate member achievements. Track weight, measurements, workout stats, and personal records. Provide motivation and adjust plans based on progress.\n\n3. NUTRITION ADVICE: Provide evidence-based nutrition guidance. Calculate calorie needs, macro splits, and suggest meal ideas. Respect dietary restrictions (vegan, keto, allergies, etc.).\n\n4. EDUCATION: Use web search to find latest fitness research, proper form tips, and nutrition science. Stay current with fitness trends.\n\n5. CALCULATIONS: Use code execution to calculate:\n   - BMI and body composition\n   - TDEE (Total Daily Energy Expenditure)\n   - Calorie and macro targets\n   - Progressive overload recommendations\n   - 1RM estimates and training percentages\n\n6. PERSONALIZATION: Remember each member's:\n   - Fitness goals (weight loss, muscle gain, endurance, general fitness)\n   - Current fitness level (beginner, intermediate, advanced)\n   - Workout preferences and restrictions\n   - Nutrition preferences and allergies\n   - Progress history\n\nTone: Motivating, supportive, knowledgeable, and encouraging. Use fitness emojis 💪🏋️‍♀️🥗 to keep energy high. Always prioritize safety and proper form.\n\nWhen members first chat:\n- Greet them warmly and ask about their fitness goals\n- Gather key info: current fitness level, injuries, equipment access, time availability\n- Ask about nutrition preferences and restrictions\n- Create a personalized plan based on their answers\n\nFor returning members:\n- Check on their progress since last chat\n- Celebrate wins and provide encouragement\n- Adjust plans based on results and feedback\n- Answer questions and provide support",
+  "tools": {
+    "hosted": ["web_search", "code_interpreter"],
+    "custom": [
+      {
+        "name": "save_member_profile",
+        "description": "Save or update a member's fitness profile including goals, level, preferences, and restrictions",
+        "parameters": {
+          "member_name": "string",
+          "fitness_goal": "string (weight_loss, muscle_gain, endurance, general_fitness)",
+          "fitness_level": "string (beginner, intermediate, advanced)",
+          "injuries_limitations": "string",
+          "equipment_access": "string (full_gym, home_basic, bodyweight)",
+          "time_per_workout": "number (minutes)",
+          "workouts_per_week": "number",
+          "diet_type": "string (omnivore, vegetarian, vegan, keto, paleo, etc)",
+          "allergies": "string",
+          "calorie_target": "number (optional)",
+          "current_weight": "number (kg, optional)",
+          "target_weight": "number (kg, optional)"
+        }
+      },
+      {
+        "name": "get_member_profile",
+        "description": "Retrieve a member's saved fitness profile and history",
+        "parameters": {
+          "member_name": "string"
+        }
+      },
+      {
+        "name": "log_workout",
+        "description": "Log a completed workout session with exercises, sets, reps, and weight",
+        "parameters": {
+          "member_name": "string",
+          "date": "string (YYYY-MM-DD)",
+          "workout_type": "string (strength, cardio, flexibility, etc)",
+          "exercises": "array of objects with name, sets, reps, weight",
+          "duration_minutes": "number",
+          "notes": "string (optional)"
+        }
+      },
+      {
+        "name": "log_progress",
+        "description": "Log member's progress metrics (weight, measurements, etc)",
+        "parameters": {
+          "member_name": "string",
+          "date": "string (YYYY-MM-DD)",
+          "weight": "number (kg, optional)",
+          "body_fat_percentage": "number (optional)",
+          "measurements": "object with chest, waist, hips, arms, legs (cm, optional)",
+          "notes": "string (optional)"
+        }
+      },
+      {
+        "name": "get_workout_history",
+        "description": "Retrieve a member's workout history and progress over time",
+        "parameters": {
+          "member_name": "string",
+          "days": "number (default: 30)"
+        }
+      }
+    ],
+    "mcp_servers": []
+  },
+  "memory": {
+    "type": "sqlite",
+    "config": {
+      "db_path": "powerfit_members.db"
+    }
+  },
+  "handoffs": [],
+  "guardrails": {
+    "input": ["max_length"],
+    "output": ["no_pii", "fitness_safety"],
+    "tools": []
+  },
+  "output": {
+    "type": "text",
+    "schema": null
+  },
+  "realtime_config": null,
+  "deployment": {
+    "type": "docker",
+    "server": "fastapi",
+    "port": 8000
+  },
+  "frontend": {
+    "needs_frontend": true,
+    "type": "full_website",
+    "template": "nextjs-chatkit-ui",
+    "variables": {
+      "PROJECT_NAME": "powerfit",
+      "PROJECT_TITLE": "PowerFit Gym",
+      "COMPANY_NAME": "PowerFit",
+      "TAGLINE": "Your AI Fitness Coach",
+      "DESCRIPTION": "Get personalized workout plans, nutrition advice, and track your progress with our AI fitness coach.",
+      "BACKEND_URL": "http://localhost:8000/chatkit",
+      "BRAND_COLOR": "#EF4444",
+      "THEME": "fitness"
+    }
+  },
+  "metadata": {
+    "client_jid": "923001234567@s.whatsapp.net",
+    "created_at": "2026-02-28T12:11:35Z",
+    "version": "1.0"
+  }
+}
